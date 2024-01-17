@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import type TipoPet from "../tipos/tipoPet";
 import EnumEspecie from "../enum/EnumEspecie";
+import PetRepository from "../repositories/PetRepository";
+import PetEntity from "../entities/PetEntity";
 let listaDePets:TipoPet[] = [];
 let id = 0;
 function geraId() {
@@ -8,37 +10,40 @@ function geraId() {
   return id;
 }
 export default class PetController  { 
-
+  constructor(private repository: PetRepository){}
 
   criaPet(req: Request, res: Response){
     
-    const { nome, especie, dataNascimento, adotado  } = req.body as TipoPet;
-    
+    const { nome, especie, dataDeNascimento, adotado  } = req.body as PetEntity;
+      
     if(!Object.values(EnumEspecie).includes(especie)){
-      return res.status (404).json({ erro: "Espécie invpalida" }); 
+      return res.status (404).json({ erro: "Espécie inválida" }); 
     }
-
-    const novoPet:TipoPet = {
-      id: geraId(), adotado, especie, dataNascimento, nome
-    }
-    listaDePets.push(novoPet);
+    const novoPet = new PetEntity();
+    (novoPet.id = geraId()),
+        (novoPet.adotado = adotado),
+        (novoPet.especie = especie),
+        (novoPet.dataDeNascimento = dataDeNascimento),
+        (novoPet.nome = nome),
+        this.repository.criaPet(novoPet);
     return res.status(201).json(novoPet);
   }
 
-  listaPets (req: Request, res: Response) {
+  async listaPets (req: Request, res: Response) {
+    const listaDePets = await this.repository.listaPet();
     return res.status (200).json (listaDePets);
     }
 
     atualizaPet (req: Request, res: Response) {
       const { id } = req.params;
-      const { adotado, especie, dataNascimento, nome} = req.body as TipoPet;
+      const { adotado, especie, dataDeNascimento, nome} = req.body as TipoPet;
       const pet = listaDePets.find((pet) => pet.id === Number(id));
       if (!pet) { 
       return res.status (404).json({ erro: "Pet não encontrado" });
       }
 
       pet.nome = nome;
-      pet.dataNascimento = dataNascimento;
+      pet.dataDeNascimento = dataDeNascimento;
       pet.especie = especie;
       pet.adotado = adotado;
       return res.status (200).json (pet);
