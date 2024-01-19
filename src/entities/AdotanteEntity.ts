@@ -6,17 +6,20 @@ export default class AdotanteEntity{
   @Column()
   nome: string;
   @Column()
-  email: string;
+  senha: string;
   @Column()
-  telefone: string;
+  celular: string;
   @Column()
-  hasPet: boolean;
+  foto: string;
+  @Column()
+  endereco: string;
 
 
-  constructor(nome: string, email: string, telefone: string, hasPet: boolean){
+  constructor(nome: string, senha: string, celular: string, foto:string, endereco: string){
     this.nome = nome,
-    this.email = email,
-    this.telefone = telefone,
-    this.hasPet = hasPet
+    this.senha = senha;
+    this.celular = celular,
+    this.foto = foto,
+    this.endereco = endereco
   }
 }
