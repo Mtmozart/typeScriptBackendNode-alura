@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export default class EnderecoEntity{
@@ -8,6 +8,7 @@ export default class EnderecoEntity{
   cidade: string;
   @Column()
   estado: string;
+  
 
 
   constructor(cidade: string, estado: string){
