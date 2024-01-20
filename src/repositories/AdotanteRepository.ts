@@ -17,23 +17,29 @@ export default class implements IAdotanteRepository{
     return await this.repository.find();
   }
 
-  async atualizaAdotante(id: number, newAdotante: AdotanteEntity): Promise<{ success: boolean; message?: string }> {
-  try {
-    const adotanteUpdate = await this.repository.findOne({where: {id}})
-    if (!adotanteUpdate) {
-      return { success: false, message: "Usuário não encnotrado" };
-    }
-    Object.assign(adotanteUpdate, newAdotante);
+  async atualizaAdotante(
+    id: number,
+    newData: AdotanteEntity
+  ): Promise<{ success: boolean; message?: string }> {
+    try {
+      const adotanteToUpdate = await this.repository.findOne({ where: { id } });
 
-    return { success: true };
-  } catch (e) {
-    console.log(e);
+      if (!adotanteToUpdate) {
+        return { success: false, message: "Adotante não encontrado" };
+      }
+
+      Object.assign(adotanteToUpdate, newData);
+
+      await this.repository.save(adotanteToUpdate);
+
+      return { success: true };
+    } catch (error) {
+      console.log(error);
       return {
         success: false,
         message: "Ocorreu um erro ao tentar atualizar o adotante.",
       };
-    
-  }
+    }
   }
   async deletaAdotante(id: number):  Promise<{ success: boolean; message?: string }> {
       try{
